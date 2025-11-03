@@ -28,11 +28,13 @@ export default function CartPage() {
     <div className="max-w-6xl mx-auto p-4 grid grid-cols-1 lg:grid-cols-3 gap-10 mt-10">
       {/* 🛍️ Left side: Cart items */}
       <div className="lg:col-span-2 space-y-4">
-        <h2 className="text-2xl font-semibold mb-4">Your Cart</h2>
+        <div className="border w-full h-30 rounded-xl mb-5 flex justify-center items-center">
+          <h2 className="text-3xl font-semibold">Your Cart</h2>
+        </div>
         {items.map((item) => (
           <div
             key={item.id}
-            className="flex items-center justify-between border p-3 rounded-lg shadow-sm relative"
+            className="flex flex-wrap md:flex-nowrap items-center justify-between border p-3 rounded-lg shadow-sm relative"
           >
             <div className="flex items-center gap-5 p-1">
               <img
@@ -47,43 +49,46 @@ export default function CartPage() {
                 </p>
 
                 {/* 🔢 Quantity Controls */}
-                <div className="flex items-center gap-2 mt-2">
-                  <Button
-                    size="icon"
-                    variant="outline"
-                    onClick={() =>
-                      dispatch(updateQuantity({ id: item.id, quantity: item.quantity - 1 }))
-                    }
-                    disabled={item.quantity <= 1}
-                  >
-                    −
-                  </Button>
-                  <span className="px-3 w-14 text-center border rounded-md py-1 no-spinner">{item.quantity}</span>
-                  <Button
-                    size="icon"
-                    variant="outline"
-                    onClick={() =>
-                      dispatch(updateQuantity({ id: item.id, quantity: item.quantity + 1 }))
-                    }
-                  >
-                    +
-                  </Button>
-                </div>
+
               </div>
             </div>
+            <div>
+              <div className="flex items-center gap-2 mt-2">
+                <Button
+                  size="icon"
+                  variant="outline"
+                  onClick={() =>
+                    dispatch(updateQuantity({ id: item.id, quantity: item.quantity - 1 }))
+                  }
+                  disabled={item.quantity <= 1}
+                >
+                  −
+                </Button>
+                <span className="px-3 w-14 text-center border rounded-md py-1 no-spinner">{item.quantity}</span>
+                <Button
+                  size="icon"
+                  variant="outline"
+                  onClick={() =>
+                    dispatch(updateQuantity({ id: item.id, quantity: item.quantity + 1 }))
+                  }
+                >
+                  +
+                </Button>
 
-            <Button
-            className="absolute top-[-10px] right-[-10px]"
-              variant="destructive"
-              onClick={() => dispatch(removeFromCart(item.id))}
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
+              </div>
+              <Button
+                className=" mt-2 w-full"
+                variant="destructive"
+                onClick={() => dispatch(removeFromCart(item.id))}
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
         ))}
       </div>
       {/* 💳 Right side: Order summary */}
-      <div className="border rounded-xl p-5 shadow-md h-fit">
+      <div className="border rounded-xl p-5 shadow-md h-fit sticky top-20">
         <h3 className="text-xl font-semibold mb-4">Order Summary</h3>
 
         <div className="space-y-2 text-sm">
@@ -114,6 +119,6 @@ export default function CartPage() {
       </div>
     </div>
   )
-  
+
 }
 

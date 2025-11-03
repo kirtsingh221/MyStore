@@ -7,6 +7,7 @@ import { addToCart } from "@/store/slices/cartSlice"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Star } from "lucide-react"
+import { useToast } from "@/components/ui/use-toast"
 
 export function ProductView({ product }: { product: any }) {
 
@@ -14,6 +15,7 @@ export function ProductView({ product }: { product: any }) {
   const [qty, setQty] = useState(1)
   const [related, setRelated] = useState<any[]>([]) // ✅ store related products
   const dispatch = useDispatch()
+  const { toast } = useToast()
 
   // ✅ Fetch related products (same category or random)
   useEffect(() => {
@@ -46,7 +48,12 @@ export function ProductView({ product }: { product: any }) {
         quantity: qty,
         // qty: 0
       })
+      
     )
+    toast({
+      title: "Added to Cart",
+      description: `${product.name} has been added to your cart.`,
+    })
   }
 
   return (

@@ -1,7 +1,9 @@
 "use client"
 
 import { useEffect, useState, useMemo } from "react"
-import { useRouter } from "next/navigation" // ✅ Add this
+import { useRouter } from "next/navigation"
+import { useDispatch } from "react-redux"
+import { addToCart } from "@/store/slices/cartSlice"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -9,17 +11,37 @@ import { Slider } from "@/components/ui/slider"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Menu, Star } from "lucide-react"
+import { useToast } from "@/components/ui/use-toast"
+import { useSearchParams } from "next/navigation"
 
 
 export default function ShopPage() {
-  const router = useRouter() // ✅ Now works fine
+  const router = useRouter()
+  const dispatch = useDispatch()
+  const { toast } = useToast()
   const [products, setProducts] = useState<any[]>([])
   const [price, setPrice] = useState([5000])
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedBrands, setSelectedBrands] = useState<string[]>([])
   const [selectedGenders, setSelectedGenders] = useState<string[]>([])
-
-
+  const searchParams = useSearchParams()
+  const categoryParam = searchParams.get("category")
+  
+  // ✅ Apply category filter when coming from Home
+  useEffect(() => {
+    if (categoryParam) {
+      // Reset other filters to show only selected category
+      setSelectedBrands([])
+      setSelectedGenders([])
+  
+      if (["Men", "Women", "Kids"].includes(categoryParam)) {
+        setSelectedGenders([categoryParam])
+      } else {
+        setSelectedBrands([categoryParam])
+      }
+    }
+  }, [categoryParam])
+  
   // ✅ Fetch products from Fake Store API
   useEffect(() => {
     fetch("https://fakestoreapi.com/products")
@@ -59,6 +81,24 @@ export default function ShopPage() {
       return matchesSearch && matchesPrice && matchesBrand && matchesGender
     })
   }, [products, searchTerm, price, selectedBrands, selectedGenders])
+
+  // ✅ Add to Cart Handler
+  const handleAddToCart = (product: any) => {
+    dispatch(
+      addToCart({
+        id: product.id,
+        title: product.name,
+        image: product.image,
+        price: product.price,
+        quantity: 1,
+      })
+    )
+
+    toast({
+      title: "Added to Cart",
+      description: `${product.name} has been added to your cart.`,
+    })
+  }
 
   return (
     <div className="flex flex-col md:flex-row w-full min-h-screen">
@@ -173,10 +213,18 @@ export default function ShopPage() {
 
                 {/* Buttons */}
                 <div className="flex justify-between w-full">
-                  <Button disabled={!product.inStock} className="w-[49%]" onClick={() => router.push(`/shop/${product.id}`)}>
+                  <Button
+                    disabled={!product.inStock}
+                    className="w-[49%]"
+                    onClick={() => router.push(`/shop/${product.id}`)}
+                  >
                     View
                   </Button>
-                  <Button disabled={!product.inStock} className="w-[49%]" >
+                  <Button
+                    disabled={!product.inStock}
+                    className="w-[49%]"
+                    onClick={() => handleAddToCart(product)}
+                  >
                     Add to Cart
                   </Button>
                 </div>
@@ -251,7 +299,7 @@ function Sidebar({
 
       {/* Brand Filter */}
       <div>
-        <Label>Brand</Label>
+        <Label>Category</Label>
         <div className="flex flex-col space-y-2 mt-2">
           {brands.map((brand) => (
             <div key={brand} className="flex items-center space-x-2">
