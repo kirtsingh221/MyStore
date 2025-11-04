@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { Menu, ShoppingCart } from "lucide-react"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 
 import {
     Sheet,
@@ -24,9 +25,20 @@ import { RootState } from "@/store/store"
 export default function Navbar() {
     const [open, setOpen] = useState(false)
     const cartCount = useSelector((state: RootState) =>
-    state.cart.items.reduce((total, item) => total + item.quantity, 0)
-  )
-  
+        state.cart.items.reduce((total, item) => total + item.quantity, 0)
+    )
+
+    const pathname = usePathname()
+
+    const links = [
+        { href: "/", label: "Home" },
+        { href: "/shop", label: "Shop" },
+        { href: "/about-us", label: "About Us" },
+        { href: "/categories", label: "Categories" },
+        { href: "/contact-us", label: "Contact Us" },
+    ]
+
+
     return (
         <nav className="w-full bg-white border-b shadow-sm px-6 py-3 flex items-center justify-between sticky top-0 z-[99]">
             {/* Logo */}
@@ -35,17 +47,17 @@ export default function Navbar() {
             </div>
 
             {/* Desktop Menu */}
-            <div className="hidden md:flex items-center space-x-6">
-                <Link href="/" className="hover:text-primary transition-colors">Home</Link>
+            <div className="hidden md:flex items-center mx-[auto] my-0 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 gap-10">
+                <Link href="/" className="hover:text-primary transition-colors font-semibold">Home</Link>
                 {/* Shop Dropdown */}
-                <Link href="/shop" className="hover:text-primary transition-colors">Shop</Link>
-                <Link href="/about-us" className="hover:text-primary transition-colors">About Us</Link>
-                <Link href="/categories" className="hover:text-primary transition-colors">Categories</Link>
-                <Link href="/contact-us" className="hover:text-primary transition-colors">Contact Us</Link>
+                <Link href="/shop" className="hover:text-primary transition-colors font-semibold">Shop</Link>
+                <Link href="/about-us" className="hover:text-primary transition-colors font-semibold">About Us</Link>
+                <Link href="/categories" className="hover:text-primary transition-colors font-semibold">Categories</Link>
+                <Link href="/contact-us" className="hover:text-primary transition-colors font-semibold">Contact Us</Link>
             </div>
 
             {/* Right Section */}
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center gap-4">
                 <Link href="/cart" className="relative">
                     <ShoppingCart className="h-6 w-6" />
                     {cartCount > 0 && (
@@ -66,12 +78,18 @@ export default function Navbar() {
                     </SheetTrigger>
                     <SheetContent side="right" className="w-64">
                         <div className="flex flex-col space-y-4 mt-6 px-5">
-                            <Link href="/" className="hover:text-primary transition-colors">Home</Link>
-                            {/* Shop Dropdown */}
-                            <Link href="/shop" className="hover:text-primary transition-colors">Shop</Link>
-                            <Link href="/about-us" className="hover:text-primary transition-colors">About Us</Link>
-                            <Link href="/categories" className="hover:text-primary transition-colors">Categories</Link>
-                            <Link href="/contact-us" className="hover:text-primary transition-colors">Contact Us</Link>
+                            {links.map((link) => (
+                                <Link
+                                    key={link.href}
+                                    href={link.href}
+                                    className={`transition-colors ${pathname === link.href
+                                            ? "text-primary font-semibold"
+                                            : "hover:text-primary text-gray-700"
+                                        }`}
+                                >
+                                    {link.label}
+                                </Link>
+                            ))}
 
                             <div className="flex flex-col space-y-2">
                                 <Button variant="outline" onClick={() => setOpen(false)}>Login</Button>

@@ -13,6 +13,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Menu, Star } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
 import { useSearchParams } from "next/navigation"
+import { Spinner } from "@/components/ui/spinner"
 
 
 export default function ShopPage() {
@@ -20,7 +21,7 @@ export default function ShopPage() {
   const dispatch = useDispatch()
   const { toast } = useToast()
   const [products, setProducts] = useState<any[]>([])
-  const [price, setPrice] = useState([5000])
+  const [price, setPrice] = useState([100000])
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedBrands, setSelectedBrands] = useState<string[]>([])
   const [selectedGenders, setSelectedGenders] = useState<string[]>([])
@@ -149,9 +150,9 @@ export default function ShopPage() {
         </div>
 
         {filteredProducts.length === 0 ? (
-          <p className="text-muted-foreground text-center py-10">
-            No products found matching your filters.
-          </p>
+        <div className="relative h-[50vh]">
+           <Spinner className="size-16 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 "/>
+        </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredProducts.map((product) => (
@@ -159,6 +160,7 @@ export default function ShopPage() {
                 key={product.id}
                 className="border rounded-xl shadow-sm p-3 flex flex-col hover:shadow-md transition"
               >
+                
                 {/* Image */}
                 <div className="w-full text-center flex justify-center">
                   <img
@@ -291,7 +293,7 @@ function Sidebar({
         <Slider
           value={price}
           onValueChange={setPrice}
-          max={5000}
+          max={100000}
           step={50}
           className="mt-2"
         />
