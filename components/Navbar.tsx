@@ -34,7 +34,6 @@ export default function Navbar() {
         { href: "/", label: "Home" },
         { href: "/shop", label: "Shop" },
         { href: "/about-us", label: "About Us" },
-        { href: "/categories", label: "Categories" },
         { href: "/contact-us", label: "Contact Us" },
     ]
 
@@ -52,7 +51,6 @@ export default function Navbar() {
                 {/* Shop Dropdown */}
                 <Link href="/shop" className="hover:text-primary transition-colors font-semibold">Shop</Link>
                 <Link href="/about-us" className="hover:text-primary transition-colors font-semibold">About Us</Link>
-                <Link href="/categories" className="hover:text-primary transition-colors font-semibold">Categories</Link>
                 <Link href="/contact-us" className="hover:text-primary transition-colors font-semibold">Contact Us</Link>
             </div>
 
